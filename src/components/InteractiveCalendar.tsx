@@ -34,7 +34,6 @@ type NotesType = {
   [key: string]: string;
 };
 
-
 function InteractiveCalendar() {
   const today = new Date();
 
@@ -47,11 +46,6 @@ function InteractiveCalendar() {
     return stored ? JSON.parse(stored) : {};
   });
   const [dark, setDark] = useState<boolean>(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("calendar-notes");
-    if (stored) setNotes(JSON.parse(stored));
-  }, []);
 
   useEffect(() => {
     localStorage.setItem("calendar-notes", JSON.stringify(notes));
@@ -110,9 +104,10 @@ function InteractiveCalendar() {
   const selectedKey = `${currentYear}-${currentMonth}`;
 
   return (
-    <div className={`min-h-screen flex items-center justify-center p-8 ${dark ? "bg-gray-900" : "bg-gray-200"}`}>
-      <div className="relative w-full max-w-5xl">
+    <div className={`min-h-screen flex items-center justify-center p-4 md:p-8 ${dark ? "bg-gray-900" : "bg-gray-200"}`}>
+      <div className="relative w-full max-w-5xl scale-[0.95] sm:scale-100">
 
+        {/* Hanging Hook */}
         <div className="flex flex-col items-center mb-[-28px] relative z-20">
           <div className="w-3 h-3 md:w-4 md:h-4 bg-gray-600 rounded-full shadow-lg"></div>
           <div className="w-[2px] h-6 bg-gray-400"></div>
@@ -127,8 +122,9 @@ function InteractiveCalendar() {
           className={`rounded-2xl shadow-2xl overflow-hidden w-full min-h-[100vh] md:min-h-[1000px] ${dark ? "bg-gray-800 text-white" : "bg-white"}`}
         >
 
+          {/* Header */}
           <div className="flex justify-between items-center p-4 border-b">
-            <h1 className="text-xl font-bold">Interactive Calendar</h1>
+            <h1 className="text-lg md:text-xl font-bold">Calendar</h1>
 
             <button
               onClick={() => setDark(!dark)}
@@ -138,6 +134,7 @@ function InteractiveCalendar() {
             </button>
           </div>
 
+          {/* Hero Section */}
           <AnimatePresence mode="wait">
             <motion.div
               key={currentMonth}
@@ -145,7 +142,7 @@ function InteractiveCalendar() {
               animate={{ y: 0, opacity: 1, clipPath: "inset(0 0 0% 0)" }}
               exit={{ y: 120, opacity: 0, clipPath: "inset(100% 0 0 0)" }}
               transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="relative h-[35vh] sm:h-[40vh] md:h-[520px]"
+              className="relative h-[30vh] sm:h-[35vh] md:h-[520px]"
             >
               <img
                 src={heroImages[currentMonth % heroImages.length]}
@@ -155,15 +152,19 @@ function InteractiveCalendar() {
                 className="w-full h-full object-cover"
               />
 
-              <div className="absolute bottom-0 right-0 bg-blue-600 text-white p-6 rounded-tl-3xl">
-                <h2 className="text-lg">{currentYear}</h2>
-                <h1 className="text-3xl font-bold">{months[currentMonth]}</h1>
+              <div className="absolute bottom-0 right-0 bg-blue-600 text-white p-4 md:p-6 rounded-tl-3xl">
+                <h2 className="text-sm md:text-lg">{currentYear}</h2>
+                <h1 className="text-xl md:text-3xl font-bold">
+                  {months[currentMonth]}
+                </h1>
               </div>
             </motion.div>
           </AnimatePresence>
 
+          {/* Content */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
 
+            {/* Notes */}
             <div>
               <h3 className="font-semibold mb-2">Notes</h3>
 
@@ -171,17 +172,18 @@ function InteractiveCalendar() {
                 value={notes[selectedKey] || ""}
                 onChange={(e) => setNotes({ ...notes, [selectedKey]: e.target.value })}
                 placeholder="Write monthly notes..."
-                className={`w-full h-60 p-3 rounded-lg border resize-none ${dark ? "bg-gray-700 text-white" : "bg-white"}`}
+                className={`w-full h-40 md:h-60 p-3 rounded-lg border resize-none ${dark ? "bg-gray-700 text-white" : "bg-white"}`}
               />
             </div>
 
+            {/* Calendar */}
             <div className="md:col-span-2">
               <div className="flex justify-between items-center mb-4">
                 <button onClick={() => changeMonth("prev")} className="p-2 rounded-lg hover:bg-gray-200">
                   <ChevronLeft />
                 </button>
 
-                <h2 className="text-lg font-semibold">
+                <h2 className="text-base md:text-lg font-semibold">
                   {months[currentMonth]} {currentYear}
                 </h2>
 
@@ -190,13 +192,13 @@ function InteractiveCalendar() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-7 text-center mb-2 text-sm font-semibold">
+              <div className="grid grid-cols-7 text-center mb-2 text-xs md:text-sm font-semibold">
                 {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((day) => (
                   <div key={day}>{day}</div>
                 ))}
               </div>
 
-              <div className="grid grid-cols-7 gap-2">
+              <div className="grid grid-cols-7 gap-1 md:gap-2">
                 {Array.from({ length: firstDay }).map((_, i) => (
                   <div key={i}></div>
                 ))}
@@ -209,12 +211,12 @@ function InteractiveCalendar() {
                     <motion.button
                       key={day}
                       onClick={() => handleDateClick(day)}
-                      className={`p-3 rounded-lg text-sm transition-all ${selected ? "bg-blue-600 text-white" : "hover:bg-gray-200"}`}
+                      className={`p-2 md:p-3 rounded-lg text-xs md:text-sm transition-all ${selected ? "bg-blue-600 text-white" : "hover:bg-gray-200"}`}
                     >
                       <div className="flex flex-col items-center">
                         <span>{day}</span>
                         {isHoliday(day) && (
-                          <span className="w-1.5 h-1.5 bg-red-500 rounded-full mt-1"></span>
+                          <span className="w-1 h-1 md:w-1.5 md:h-1.5 bg-red-500 rounded-full mt-1"></span>
                         )}
                       </div>
                     </motion.button>

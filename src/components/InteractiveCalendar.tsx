@@ -16,14 +16,14 @@ const months: string[] = [
 ];
 
 const heroImages: string[] = [
-  "https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=500&auto=format&fit=crop&q=60",
+  "https://plus.unsplash.com/premium_photo-1694743671394-60034a1b2f65?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bW90aXZhdGlvbnxlbnwwfHwwfHx8MA%3D%3D",
   "https://images.unsplash.com/photo-1421091242698-34f6ad7fc088?w=500&auto=format&fit=crop&q=60",
   "https://images.unsplash.com/photo-1632010752286-94f8b0f7be68?w=500&auto=format&fit=crop&q=60",
   "https://images.unsplash.com/photo-1504507926084-34cf0b939964?w=500&auto=format&fit=crop&q=60",
   "https://images.unsplash.com/photo-1698326560917-ef25ca57da8d?w=500&auto=format&fit=crop&q=60",
   "https://plus.unsplash.com/premium_photo-1664444320083-3c0458bcc2b5?w=500&auto=format&fit=crop&q=60",
-  "https://plus.unsplash.com/premium_photo-1683749810427-9f460939f702?w=500&auto=format&fit=crop&q=60",
-  "https://plus.unsplash.com/premium_photo-1700675175397-7cc710d56e11?w=500&auto=format&fit=crop&q=60",
+  "https://plus.unsplash.com/premium_photo-1687067885966-d755107af021?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fG1vdGl2YXRpb258ZW58MHx8MHx8fDA%3D",
+  "https://plus.unsplash.com/premium_photo-1671512499810-ac5b5dd3bc2b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDl8fG1vdGl2YXRpb258ZW58MHx8MHx8fDA%3D",
   "https://images.unsplash.com/photo-1530036846422-afb4b7af2fd4?w=500&auto=format&fit=crop&q=60",
   "https://images.unsplash.com/photo-1554290712-e640351074bd?w=500&auto=format&fit=crop&q=60",
   "https://images.unsplash.com/photo-1635712707224-233b9a093808?w=500&auto=format&fit=crop&q=60",
@@ -35,17 +35,21 @@ type NotesType = {
 };
 
 function InteractiveCalendar() {
+
   const today = new Date();
 
-  const [currentMonth, setCurrentMonth] = useState<number>(today.getMonth());
-  const [currentYear, setCurrentYear] = useState<number>(today.getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
+
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+
   const [notes, setNotes] = useState<NotesType>(() => {
     const stored = localStorage.getItem("calendar-notes");
     return stored ? JSON.parse(stored) : {};
   });
-  const [dark, setDark] = useState<boolean>(false);
+
+  const [dark, setDark] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("calendar-notes", JSON.stringify(notes));
@@ -54,77 +58,70 @@ function InteractiveCalendar() {
   const daysInMonth = getDaysInMonth(currentMonth, currentYear);
   const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
 
-  const holidays: Record<string, string> = {
-    "0-1": "New Year",
-    "0-26": "Republic Day",
-    "7-15": "Independence Day",
-    "9-2": "Gandhi Jayanti",
-    "11-25": "Christmas",
-  };
-
-  const isHoliday = (day: number) => holidays[`${currentMonth}-${day}`];
-
   const handleDateClick = (day: number) => {
-    const clickedDate = new Date(currentYear, currentMonth, day);
+    const clicked = new Date(currentYear, currentMonth, day);
 
-    if (!startDate || (startDate && endDate)) {
-      setStartDate(clickedDate);
+    if (!startDate || endDate) {
+      setStartDate(clicked);
       setEndDate(null);
-    } else if (startDate && clickedDate > startDate) {
-      setEndDate(clickedDate);
+    } else if (clicked > startDate) {
+      setEndDate(clicked);
     } else {
-      setStartDate(clickedDate);
+      setStartDate(clicked);
     }
   };
 
-  const isInRange = (day: number): boolean => {
+  const isInRange = (day: number) => {
     if (!startDate || !endDate) return false;
     const date = new Date(currentYear, currentMonth, day);
     return date >= startDate && date <= endDate;
   };
 
-  const changeMonth = (direction: "prev" | "next") => {
-    if (direction === "prev") {
+  const changeMonth = (dir: "prev" | "next") => {
+    if (dir === "prev") {
       if (currentMonth === 0) {
         setCurrentMonth(11);
         setCurrentYear(currentYear - 1);
-      } else {
-        setCurrentMonth(currentMonth - 1);
-      }
+      } else setCurrentMonth(currentMonth - 1);
     } else {
       if (currentMonth === 11) {
         setCurrentMonth(0);
         setCurrentYear(currentYear + 1);
-      } else {
-        setCurrentMonth(currentMonth + 1);
-      }
+      } else setCurrentMonth(currentMonth + 1);
     }
   };
 
   const selectedKey = `${currentYear}-${currentMonth}`;
 
   return (
-    <div className={`min-h-screen flex items-center justify-center p-4 md:p-8 ${dark ? "bg-gray-900" : "bg-gray-200"}`}>
-      <div className="relative w-full max-w-5xl scale-[0.95] sm:scale-100">
 
-        {/* Hanging Hook */}
-        <div className="flex flex-col items-center mb-[-28px] relative z-20">
-          <div className="w-3 h-3 md:w-4 md:h-4 bg-gray-600 rounded-full shadow-lg"></div>
+    <div className={`min-h-screen flex items-center justify-center p-4 ${dark ? "bg-gray-900" : "bg-gray-200"}`}>
+
+      <div className="relative w-full max-w-5xl">
+
+        {/* Hook */}
+
+        <div className="flex flex-col items-center mb-[-30px] z-20 relative">
+          <div className="w-3 h-3 bg-gray-600 rounded-full"></div>
           <div className="w-[2px] h-6 bg-gray-400"></div>
-          <div className="w-6 h-6 md:w-8 md:h-8 border-2 border-gray-500 rounded-full bg-white shadow-md"></div>
+          <div className="w-7 h-7 border-2 border-gray-500 rounded-full bg-white"></div>
         </div>
 
         <motion.div
           initial={{ rotate: -0.8 }}
-          animate={{ rotate: [ -0.8, 0.8, -0.8 ] }}
-          transition={{ duration: 6, ease: "easeInOut", repeat: Infinity }}
+          animate={{ rotate: [-0.8, 0.8, -0.8] }}
+          transition={{ duration: 6, repeat: Infinity }}
           style={{ transformOrigin: "top center" }}
-          className={`rounded-2xl shadow-2xl overflow-hidden w-full min-h-[100vh] md:min-h-[1000px] ${dark ? "bg-gray-800 text-white" : "bg-white"}`}
+          className={`rounded-2xl shadow-2xl overflow-hidden w-full h-auto md:h-[92vh] max-h-[900px] flex flex-col ${dark ? "bg-gray-800 text-white" : "bg-white"}`}
         >
 
           {/* Header */}
+
           <div className="flex justify-between items-center p-4 border-b">
-            <h1 className="text-lg md:text-xl font-bold">Calendar</h1>
+
+            <h1 className="text-lg font-bold">
+              Calendar
+            </h1>
 
             <button
               onClick={() => setDark(!dark)}
@@ -132,104 +129,143 @@ function InteractiveCalendar() {
             >
               {dark ? <Sun /> : <Moon />}
             </button>
+
           </div>
 
-          {/* Hero Section */}
+          {/* Hero */}
+
           <AnimatePresence mode="wait">
+
             <motion.div
               key={currentMonth}
-              initial={{ y: -80, opacity: 0, clipPath: "inset(0 0 100% 0)" }}
-              animate={{ y: 0, opacity: 1, clipPath: "inset(0 0 0% 0)" }}
-              exit={{ y: 120, opacity: 0, clipPath: "inset(100% 0 0 0)" }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-              className="relative h-[30vh] sm:h-[35vh] md:h-[520px]"
+              initial={{ y: -80, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 80, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="relative h-[28vh] md:h-[36vh]"
             >
+
               <img
-                src={heroImages[currentMonth % heroImages.length]}
-                onError={(e) => {
-                  e.currentTarget.src = "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1974&auto=format&fit=crop";
-                }}
+                src={heroImages[currentMonth]}
                 className="w-full h-full object-cover"
               />
 
-              <div className="absolute bottom-0 right-0 bg-blue-600 text-white p-4 md:p-6 rounded-tl-3xl">
-                <h2 className="text-sm md:text-lg">{currentYear}</h2>
-                <h1 className="text-xl md:text-3xl font-bold">
+              <div className="absolute bottom-0 right-0 bg-blue-600 text-white p-4 rounded-tl-3xl">
+
+                <div className="text-sm">
+                  {currentYear}
+                </div>
+
+                <div className="text-xl font-bold">
                   {months[currentMonth]}
-                </h1>
+                </div>
+
               </div>
+
             </motion.div>
+
           </AnimatePresence>
 
+
           {/* Content */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 flex-1">
 
             {/* Notes */}
+
             <div>
-              <h3 className="font-semibold mb-2">Notes</h3>
+
+              <h3 className="font-semibold mb-2">
+                Notes
+              </h3>
 
               <textarea
                 value={notes[selectedKey] || ""}
-                onChange={(e) => setNotes({ ...notes, [selectedKey]: e.target.value })}
-                placeholder="Write monthly notes..."
-                className={`w-full h-40 md:h-60 p-3 rounded-lg border resize-none ${dark ? "bg-gray-700 text-white" : "bg-white"}`}
+                onChange={(e) =>
+                  setNotes({
+                    ...notes,
+                    [selectedKey]: e.target.value
+                  })
+                }
+                className={`w-full h-40 p-3 rounded-lg border resize-none ${
+                  dark ? "bg-gray-700 text-white" : "bg-white"
+                }`}
               />
+
             </div>
 
+
             {/* Calendar */}
+
             <div className="md:col-span-2">
-              <div className="flex justify-between items-center mb-4">
-                <button onClick={() => changeMonth("prev")} className="p-2 rounded-lg hover:bg-gray-200">
+
+              <div className="flex justify-between mb-4">
+
+                <button onClick={() => changeMonth("prev")}>
                   <ChevronLeft />
                 </button>
 
-                <h2 className="text-base md:text-lg font-semibold">
+                <h2 className="font-semibold">
                   {months[currentMonth]} {currentYear}
                 </h2>
 
-                <button onClick={() => changeMonth("next")} className="p-2 rounded-lg hover:bg-gray-200">
+                <button onClick={() => changeMonth("next")}>
                   <ChevronRight />
                 </button>
+
               </div>
 
-              <div className="grid grid-cols-7 text-center mb-2 text-xs md:text-sm font-semibold">
-                {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((day) => (
-                  <div key={day}>{day}</div>
+              <div className="grid grid-cols-7 text-center text-sm font-semibold">
+
+                {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((d) => (
+                  <div key={d}>{d}</div>
                 ))}
+
               </div>
 
-              <div className="grid grid-cols-7 gap-1 md:gap-2">
+              <div className="grid grid-cols-7 gap-1 mt-2">
+
                 {Array.from({ length: firstDay }).map((_, i) => (
                   <div key={i}></div>
                 ))}
 
                 {Array.from({ length: daysInMonth }).map((_, i) => {
+
                   const day = i + 1;
                   const selected = isInRange(day);
 
                   return (
-                    <motion.button
+
+                    <button
                       key={day}
                       onClick={() => handleDateClick(day)}
-                      className={`p-2 md:p-3 rounded-lg text-xs md:text-sm transition-all ${selected ? "bg-blue-600 text-white" : "hover:bg-gray-200"}`}
+                      className={`p-2 rounded-lg ${
+                        selected
+                          ? "bg-blue-600 text-white"
+                          : "hover:bg-gray-200"
+                      }`}
                     >
-                      <div className="flex flex-col items-center">
-                        <span>{day}</span>
-                        {isHoliday(day) && (
-                          <span className="w-1 h-1 md:w-1.5 md:h-1.5 bg-red-500 rounded-full mt-1"></span>
-                        )}
-                      </div>
-                    </motion.button>
+                      {day}
+                    </button>
+
                   );
+
                 })}
+
               </div>
+
             </div>
+
           </div>
 
         </motion.div>
+
       </div>
+
     </div>
+
   );
+
 }
 
 export default InteractiveCalendar;

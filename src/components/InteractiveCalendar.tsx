@@ -34,7 +34,7 @@ type NotesType = {
   [key: string]: string;
 };
 
-function InteractiveCalendar() {
+function InteractiveCalendar({ dark, setDark }: { dark: boolean; setDark: (dark: boolean) => void }) {
 
   const today = new Date();
 
@@ -49,7 +49,7 @@ function InteractiveCalendar() {
     return stored ? JSON.parse(stored) : {};
   });
 
-  const [dark, setDark] = useState(false);
+  
 
   useEffect(() => {
     localStorage.setItem("calendar-notes", JSON.stringify(notes));

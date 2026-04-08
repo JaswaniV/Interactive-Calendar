@@ -2,44 +2,51 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, Moon, Sun } from "lucide-react";
 
-const getDaysInMonth = (month, year) => {
+const getDaysInMonth = (month: number, year: number): number => {
   return new Date(year, month + 1, 0).getDate();
 };
 
-const getFirstDayOfMonth = (month, year) => {
+const getFirstDayOfMonth = (month: number, year: number): number => {
   return new Date(year, month, 1).getDay();
 };
 
-const months = [
+const months: string[] = [
   "January","February","March","April","May","June",
   "July","August","September","October","November","December",
 ];
 
-const heroImages = [
-  "https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8bW90aXZhdGlvbmFsfGVufDB8fDB8fHww",
-  "https://images.unsplash.com/photo-1421091242698-34f6ad7fc088?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fG1vdGl2YXRpb25hbHxlbnwwfHwwfHx8MA%3D%3D",
-  "https://images.unsplash.com/photo-1632010752286-94f8b0f7be68?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fG1vdGl2YXRpb25hbHxlbnwwfHwwfHx8MA%3D%3D",
-  "https://images.unsplash.com/photo-1504507926084-34cf0b939964?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDZ8fG1vdGl2YXRpb25hbHxlbnwwfHwwfHx8MA%3D%3D",
-  "https://images.unsplash.com/photo-1698326560917-ef25ca57da8d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTl8fG1vdGl2YXRpb25hbHxlbnwwfHwwfHx8MA%3D%3D",
-  "https://plus.unsplash.com/premium_photo-1664444320083-3c0458bcc2b5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Njl8fG1vdGl2YXRpb25hbHxlbnwwfHwwfHx8MA%3D%3D",
-  "https://plus.unsplash.com/premium_photo-1683749810427-9f460939f702?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTJ8fG1vdGl2YXRpb25hbHxlbnwwfHwwfHx8MA%3D%3D",
-  "https://plus.unsplash.com/premium_photo-1700675175397-7cc710d56e11?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODR8fG1vdGl2YXRpb25hbHxlbnwwfHwwfHx8MA%3D%3D",
-  "https://images.unsplash.com/photo-1530036846422-afb4b7af2fd4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTAxfHxtb3RpdmF0aW9uYWx8ZW58MHx8MHx8fDA%3D",
-  "https://images.unsplash.com/photo-1554290712-e640351074bd?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTMwfHxtb3RpdmF0aW9uYWx8ZW58MHx8MHx8fDA%3D",
-  "https://images.unsplash.com/photo-1635712707224-233b9a093808?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTU3fHxtb3RpdmF0aW9uYWx8ZW58MHx8MHx8fDA%3D",
-  "https://images.unsplash.com/photo-1504253492562-cbc4dc540fcb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fGFlc3RoZXRpY3xlbnwwfHwwfHx8MA%3D%3D",
+const heroImages: string[] = [
+  "https://images.unsplash.com/photo-1548438294-1ad5d5f4f063?w=500&auto=format&fit=crop&q=60",
+  "https://images.unsplash.com/photo-1421091242698-34f6ad7fc088?w=500&auto=format&fit=crop&q=60",
+  "https://images.unsplash.com/photo-1632010752286-94f8b0f7be68?w=500&auto=format&fit=crop&q=60",
+  "https://images.unsplash.com/photo-1504507926084-34cf0b939964?w=500&auto=format&fit=crop&q=60",
+  "https://images.unsplash.com/photo-1698326560917-ef25ca57da8d?w=500&auto=format&fit=crop&q=60",
+  "https://plus.unsplash.com/premium_photo-1664444320083-3c0458bcc2b5?w=500&auto=format&fit=crop&q=60",
+  "https://plus.unsplash.com/premium_photo-1683749810427-9f460939f702?w=500&auto=format&fit=crop&q=60",
+  "https://plus.unsplash.com/premium_photo-1700675175397-7cc710d56e11?w=500&auto=format&fit=crop&q=60",
+  "https://images.unsplash.com/photo-1530036846422-afb4b7af2fd4?w=500&auto=format&fit=crop&q=60",
+  "https://images.unsplash.com/photo-1554290712-e640351074bd?w=500&auto=format&fit=crop&q=60",
+  "https://images.unsplash.com/photo-1635712707224-233b9a093808?w=500&auto=format&fit=crop&q=60",
+  "https://images.unsplash.com/photo-1504253492562-cbc4dc540fcb?w=500&auto=format&fit=crop&q=60",
 ];
 
+type NotesType = {
+  [key: string]: string;
+};
 
-export default function InteractiveCalendar() {
+
+function InteractiveCalendar() {
   const today = new Date();
 
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
-  const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [notes, setNotes] = useState({});
-  const [dark, setDark] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState<number>(today.getMonth());
+  const [currentYear, setCurrentYear] = useState<number>(today.getFullYear());
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [notes, setNotes] = useState<NotesType>(() => {
+    const stored = localStorage.getItem("calendar-notes");
+    return stored ? JSON.parse(stored) : {};
+  });
+  const [dark, setDark] = useState<boolean>(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("calendar-notes");
@@ -53,7 +60,7 @@ export default function InteractiveCalendar() {
   const daysInMonth = getDaysInMonth(currentMonth, currentYear);
   const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
 
-  const holidays = {
+  const holidays: Record<string, string> = {
     "0-1": "New Year",
     "0-26": "Republic Day",
     "7-15": "Independence Day",
@@ -61,28 +68,28 @@ export default function InteractiveCalendar() {
     "11-25": "Christmas",
   };
 
-  const isHoliday = (day) => holidays[`${currentMonth}-${day}`];
+  const isHoliday = (day: number) => holidays[`${currentMonth}-${day}`];
 
-  const handleDateClick = (day) => {
+  const handleDateClick = (day: number) => {
     const clickedDate = new Date(currentYear, currentMonth, day);
 
     if (!startDate || (startDate && endDate)) {
       setStartDate(clickedDate);
       setEndDate(null);
-    } else if (clickedDate > startDate) {
+    } else if (startDate && clickedDate > startDate) {
       setEndDate(clickedDate);
     } else {
       setStartDate(clickedDate);
     }
   };
 
-  const isInRange = (day) => {
+  const isInRange = (day: number): boolean => {
     if (!startDate || !endDate) return false;
     const date = new Date(currentYear, currentMonth, day);
     return date >= startDate && date <= endDate;
   };
 
-  const changeMonth = (direction) => {
+  const changeMonth = (direction: "prev" | "next") => {
     if (direction === "prev") {
       if (currentMonth === 0) {
         setCurrentMonth(11);
@@ -106,10 +113,8 @@ export default function InteractiveCalendar() {
     <div className={`min-h-screen flex items-center justify-center p-8 ${dark ? "bg-gray-900" : "bg-gray-200"}`}>
       <div className="relative w-full max-w-5xl">
 
-
         <div className="flex flex-col items-center mb-[-28px] relative z-20">
           <div className="w-3 h-3 md:w-4 md:h-4 bg-gray-600 rounded-full shadow-lg"></div>
-
           <div className="w-[2px] h-6 bg-gray-400"></div>
           <div className="w-6 h-6 md:w-8 md:h-8 border-2 border-gray-500 rounded-full bg-white shadow-md"></div>
         </div>
@@ -122,7 +127,6 @@ export default function InteractiveCalendar() {
           className={`rounded-2xl shadow-2xl overflow-hidden w-full min-h-[100vh] md:min-h-[1000px] ${dark ? "bg-gray-800 text-white" : "bg-white"}`}
         >
 
-          {/* Header */}
           <div className="flex justify-between items-center p-4 border-b">
             <h1 className="text-xl font-bold">Interactive Calendar</h1>
 
@@ -134,7 +138,6 @@ export default function InteractiveCalendar() {
             </button>
           </div>
 
-          {/* Hero */}
           <AnimatePresence mode="wait">
             <motion.div
               key={currentMonth}
@@ -161,7 +164,6 @@ export default function InteractiveCalendar() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 p-4 md:p-8">
 
-            {/* Notes */}
             <div>
               <h3 className="font-semibold mb-2">Notes</h3>
 
@@ -173,7 +175,6 @@ export default function InteractiveCalendar() {
               />
             </div>
 
-            {/* Calendar */}
             <div className="md:col-span-2">
               <div className="flex justify-between items-center mb-4">
                 <button onClick={() => changeMonth("prev")} className="p-2 rounded-lg hover:bg-gray-200">
@@ -228,3 +229,5 @@ export default function InteractiveCalendar() {
     </div>
   );
 }
+
+export default InteractiveCalendar;
